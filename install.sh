@@ -17,6 +17,7 @@ else
 fi
 
 # Check for and enable command line tools.
+echo "checking for CLI tools"
 command -v git >/dev/null 2>&1 || 
 {
     echo "Enabling Command Line Tools.."
@@ -29,15 +30,20 @@ command -v git >/dev/null 2>&1 ||
     softwareupdate -i "$PROD" --verbose;
 }
 
+echo "checking for Brew"
 # Install brew if is not already Installed
 if test ! $(which brew); then
   echo "Installing homebrew..."
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
+echo "Updating brew."
 brew update
+
+echo "Installing newer version of git."
 brew install git
 
+echo "Installing Maestro to /opt/maestro"
 sudo rm -rf $INSTALL_PATH
 sudo mkdir -p $INSTALL_PATH
 
