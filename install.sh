@@ -4,6 +4,7 @@ GIT_MACOS_REPO_TEST=https://github.com/jakerenzella/maestro
 INSTALL_PATH="/opt/maestro"
 
 # Test for root password and quit if incorrect, caches password if correct.
+echo "Enter local root password for pre-install script"
 if [[ "$EUID" = 0 ]]; then
     echo "(1) already root"
 else
