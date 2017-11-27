@@ -3,6 +3,9 @@ GIT_MACOS_REPO_PROD=https://github.com/dstil/maestro
 GIT_REPO_TEST=https://github.com/jakerenzella/maestro
 INSTALL_PATH="/opt/maestro"
 
+################################
+# MacOS Install
+################################
 if [[ `uname` == Darwin ]]; then
   # Test for root password and quit if incorrect, caches password if correct.
   echo "Enter local root password for pre-install script"
@@ -54,11 +57,16 @@ if [[ `uname` == Darwin ]]; then
   exit
 fi
 
+################################
+# LINUX INSTALL
+################################
 if [[ `uname` == Linux ]]; then
   echo "installing Maestro for Ubuntu in /opt/maestro"
 
   sudo rm -rf $INSTALL_PATH
   sudo mkdir -p $INSTALL_PATH
+
+  sudo apt-get install git
 
   sudo git clone --depth 1 --single-branch --branch enhance/support-ubuntu $GIT_REPO_TEST $INSTALL_PATH
   /opt/maestro/install/ubuntu-install.sh
@@ -66,6 +74,9 @@ if [[ `uname` == Linux ]]; then
   exit
 fi
 
+################################
+# Mingw
+################################
 if [[ `uname` == MINGW* ]] || [[ `uname` == MSYS* ]]; then
   echo "MINGW not supported"
   exit
