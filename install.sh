@@ -70,7 +70,7 @@ if [[ `uname` == Linux ]]; then
   sudo apt-get -y install git
 
   sudo git clone --depth 1 --single-branch --branch enhance/support-ubuntu $GIT_REPO_TEST $INSTALL_PATH
-  chmod +x /opt/maestro/install/ubuntu-install.sh
+  sudo chmod +x /opt/maestro/install/ubuntu-install.sh
   /opt/maestro/install/ubuntu-install.sh
   echo "finished installing Maestro for Linux"
   exit
