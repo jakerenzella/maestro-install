@@ -1,6 +1,6 @@
 #!/bin/bash
 GIT_MACOS_REPO_PROD=https://github.com/dstil/maestro
-GIT_MACOS_REPO_TEST=https://github.com/jakerenzella/maestro
+GIT_REPO_TEST=https://github.com/jakerenzella/maestro
 INSTALL_PATH="/opt/maestro"
 
 if [[ `uname` == Darwin ]]; then
@@ -49,20 +49,25 @@ if [[ `uname` == Darwin ]]; then
   sudo rm -rf $INSTALL_PATH
   sudo mkdir -p $INSTALL_PATH
 
-  sudo git clone --depth 1 --single-branch --branch enhance/add-update-functionality $GIT_MACOS_REPO_TEST $INSTALL_PATH
-  /opt/maestro/install.sh
+  sudo git clone --depth 1 --single-branch --branch enhance/support-ubuntu $GIT_REPO_TEST $INSTALL_PATH
+  /opt/maestro/install/macos-install.sh
+  exit
+fi
+
+if [[ `uname` == Linux ]]; then
+  echo "installing Maestro for Ubuntu in /opt/maestro"
+
+  sudo rm -rf $INSTALL_PATH
+  sudo mkdir -p $INSTALL_PATH
+
+  sudo git clone --depth 1 --single-branch --branch enhance/support-ubuntu $GIT_REPO_TEST $INSTALL_PATH
+  /opt/maestro/install/ubuntu-install.sh
+  echo "finished installing Maestro for Linux"
   exit
 fi
 
 if [[ `uname` == MINGW* ]] || [[ `uname` == MSYS* ]]; then
   echo "MINGW not supported"
-  exit
-fi
-
-if [[ `uname` == Linux ]]; then
-  echo "installing Maestro for Ubuntu"
-  bash <(curl -s https://raw.githubusercontent.com/dstil/maestro/master/install-scripts/linux-install.sh)
-  echo "finished installing Maestro for Linux"
   exit
 fi
 
