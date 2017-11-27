@@ -66,6 +66,7 @@ if [[ `uname` == Linux ]]; then
   sudo rm -rf $INSTALL_PATH
   sudo mkdir -p $INSTALL_PATH
 
+  sudo apt-get update
   sudo apt-get install git
 
   sudo git clone --depth 1 --single-branch --branch enhance/support-ubuntu $GIT_REPO_TEST $INSTALL_PATH
