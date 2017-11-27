@@ -67,9 +67,10 @@ if [[ `uname` == Linux ]]; then
   sudo mkdir -p $INSTALL_PATH
 
   sudo apt-get update
-  sudo apt-get install git
+  sudo apt-get -y install git
 
   sudo git clone --depth 1 --single-branch --branch enhance/support-ubuntu $GIT_REPO_TEST $INSTALL_PATH
+  chmod +x /opt/maestro/install/ubuntu-install.sh
   /opt/maestro/install/ubuntu-install.sh
   echo "finished installing Maestro for Linux"
   exit
