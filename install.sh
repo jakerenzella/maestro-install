@@ -3,24 +3,25 @@ GIT_MACOS_REPO_PROD=https://github.com/dstil/maestro
 GIT_MACOS_REPO_TEST=https://github.com/jakerenzella/maestro
 INSTALL_PATH="/opt/maestro"
 
-# Test for root password and quit if incorrect, caches password if correct.
-echo "Enter local root password for pre-install script"
-if [[ "$EUID" = 0 ]]; then
-    echo "(1) already root"
-else
-    sudo -k # make sure to ask for password on next sudo
-    if sudo true; then
-        echo "Correct sudo password."
-    else
-        echo "Incorrect password, please rerun script"
-        exit 1
-    fi
-fi
+if [[ `uname` == Darwin ]]; then
+  # Test for root password and quit if incorrect, caches password if correct.
+  echo "Enter local root password for pre-install script"
+  if [[ "$EUID" = 0 ]]; then
+      echo "(1) already root"
+  else
+      sudo -k # make sure to ask for password on next sudo
+      if sudo true; then
+          echo "Correct sudo password."
+      else
+          echo "Incorrect password, please rerun script"
+          exit 1
+      fi
+  fi
 
-# Check for and enable command line tools.
-echo "checking for CLI tools"
-command -v git >/dev/null 2>&1 || 
-{
+  # Check for and enable command line tools.
+  echo "checking for CLI tools"
+  command -v git >/dev/null 2>&1 || 
+  {
     echo "Enabling Command Line Tools.."
     touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
     PROD=$(softwareupdate -l |
@@ -29,24 +30,40 @@ command -v git >/dev/null 2>&1 ||
     sed -e 's/^ *//' |
     tr -d '\n')
     softwareupdate -i "$PROD" --verbose;
-}
+  }
 
-echo "checking for Brew"
-# Install brew if is not already Installed
-if test ! $(which brew); then
+  echo "checking for Brew"
+  # Install brew if is not already Installed
+  if test ! $(which brew); then
   echo "Installing homebrew..."
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
+  echo "Updating brew."
+  brew update
+
+  echo "Installing newer version of git."
+  brew install git
+
+  echo "Installing Maestro to /opt/maestro"
+  sudo rm -rf $INSTALL_PATH
+  sudo mkdir -p $INSTALL_PATH
+
+  sudo git clone --depth 1 --single-branch --branch enhance/add-update-functionality $GIT_MACOS_REPO_TEST $INSTALL_PATH
+  /opt/maestro/install.sh
+  exit
 fi
 
-echo "Updating brew."
-brew update
+if [[ `uname` == MINGW* ]] || [[ `uname` == MSYS* ]]; then
+  echo "MINGW not supported"
+  exit
+fi
 
-echo "Installing newer version of git."
-brew install git
+if [[ `uname` == Linux ]]; then
+  echo "installing Maestro for Ubuntu"
+  bash <(curl -s https://raw.githubusercontent.com/dstil/maestro/master/install-scripts/linux-install.sh)
+  echo "finished installing Maestro for Linux"
+  exit
+fi
 
-echo "Installing Maestro to /opt/maestro"
-sudo rm -rf $INSTALL_PATH
-sudo mkdir -p $INSTALL_PATH
-
-sudo git clone --depth 1 --single-branch --branch enhance/add-update-functionality $GIT_MACOS_REPO_TEST $INSTALL_PATH
-/opt/maestro/install.sh
+echo "Maestro is not supported on this Operating System."
